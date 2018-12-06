@@ -1,0 +1,34 @@
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+@import '~admin-lte/dist/css/adminlte.css';
+
+.navbar-laravel {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+.ht-bg-primary{
+  background-color: #001970;
+  color: #ffffff;
+  margin: 5px;
+}
+.ht-bg-secondry{
+  background-color: #004ba0;
+  color: #ffffff;
+}
+.ht-top{
+  margin-top: 50px;
+}
+.ht-sidebar{
+  background-color: #303f9f;
+}
+.ht-sidebar-selected{
+  background-color: #1976d2
+}
+
