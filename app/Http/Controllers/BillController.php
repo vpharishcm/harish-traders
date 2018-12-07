@@ -65,7 +65,7 @@ class BillController extends Controller
                 $status=1;
             }
             $bill_date=$request->input('bill_date');
-            $bill_date=Carbon::createFromFormat('dd-mm-y',$bill_date)->format('Y-mm-dd');
+            $bill_date=Carbon::createFromFormat('d-m-y',$bill_date)->format('Y-m-d');
             $bill=Bill::create([
                 'supplier_id'=>$request->input('supplier_id'),
                 'bill_date'=>$request->input('bill_date'),
