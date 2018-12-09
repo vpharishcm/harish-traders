@@ -51,7 +51,7 @@ class ExpenceController extends Controller
                         $count = count($arr);
 
                         $id=$arr[$count - 1];
-                        return redirect('\\bill\\'.$id);
+                        return redirect('bill\\'.$id);
                     }
                 return redirect()->route('expence.index',['expence'=>$expence])->with(['scucess' => 'Sucessfully added']);
             }

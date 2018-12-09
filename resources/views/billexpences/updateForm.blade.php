@@ -6,7 +6,7 @@
             </h3> 
         </div>
         <div class="card-body">
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data" id="">
                 @csrf
                 <input type="hidden" value="PUT" name="_method">
                 <div class="form-group">

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BillProduct extends Model
 {
     //
-    protected $fillable=['bill_id','product_id','quantity','price'];
+    protected $fillable=['bill_id','product_id','quantity','price','description'];
     public $timestamps=false;
     public function bill()
     {

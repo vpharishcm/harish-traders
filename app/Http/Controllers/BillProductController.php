@@ -41,7 +41,8 @@ class BillProductController extends Controller
                 'product_id'=>$request->input('product_id'),
                 'bill_id'=>$request->input('bill_id'),
                 'quantity'=>$request->input('quantity'),
-                'price'=>$request->input('price')
+                'price'=>$request->input('price'),
+                'description'=>$request->input('description')
                 ]);
             $bill=$billproduct->bill();
             
@@ -89,6 +90,8 @@ class BillProductController extends Controller
             $billProduct->product_id=$request->input('product_id');
         }
         $billProduct->quantity=$request->input("quantity");
+        $billProduct->description=$request->input("description");
+        
         $billProduct->price=$request->input("price");
         $billProductUpdate=$billProduct->save();
         return redirect()->action('BillController@show', ['id' => $request->input('bill_id')]);

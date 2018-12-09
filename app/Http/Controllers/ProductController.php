@@ -60,7 +60,7 @@ class ProductController extends Controller
                         $count = count($arr);
 
                         $id=$arr[$count - 1];
-                        return redirect('\\bill\\'.$id);
+                        return redirect('bill\\'.$id);
                     }
                 return redirect()->route('product.index',['product'=>$product])->with(['scucess' => 'Sucessfully added']);
             }

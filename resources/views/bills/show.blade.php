@@ -28,7 +28,7 @@
       <table class="table table-striped table-dark" id="productstable">
           <thead>
             <tr >
-              <td colspan="5" class="text-center">
+              <td colspan="6" class="text-center">
                 <h3>Products</h3>
               </td>
               <td>
@@ -39,6 +39,7 @@
             <tr>
               <th scope="col">S.no</th>
               <th scope="col">Name</th>
+              <th scope="col">Description</th>
               <th scope="col">Quantity</th>
               <th scope="col">Price</th>
               <th scope="col">Amount</th>
@@ -50,9 +51,10 @@
             <?php $productTotal=0; ?>
             @foreach($bills['bill']->products as $key=>$billProduct)
               
-                <tr>
-                  <th scope="row">{{$key+1}}</th>
-                  <td><a href="\product\{{$billProduct->product_id}}"> {{$billProduct->product->name}}</a><p hidden> {{$billProduct->id}}</p></td>
+                <tr id="{{$billProduct->id}}">
+                  <th scope="row" >{{$key+1}}</th>
+                  <td><a href="\product\{{$billProduct->product_id}}"> {{$billProduct->product->name}}</a><p hidden> </p></td>
+                  <td>{{$billProduct->description}}</td>
                   <td>{{$billProduct->quantity}}</td>
                   <td>{{$billProduct->price}}</td>
                   <td>{{$billProduct->quantity*$billProduct->price}} </td>
@@ -63,7 +65,7 @@
           </tbody>
           <tfoot>
                 <tr>
-                  <td colspan="4" class="text-right">
+                  <td colspan="5" class="text-right">
                     Total
                   </td>
                   <td>
@@ -74,16 +76,17 @@
                   </td>
                 </tr>
                 <?php $expenceTotal=0; ?>
+                <?php $k=$key+3; ?>
             @foreach ($bills['bill']->expences as $key=>$billexpence)
-              <tr>
-                  <td colspan="4" class="text-right">{{$billexpence->expence->name}}<p hidden> {{$billexpence->id}}</p> </td>
+              <tr id="{{$billexpence->id}}">
+                  <td colspan="5" class="text-right">{{$billexpence->expence->name}}</td>
                   <td>{{$billexpence->amount}}</td>
-                  <td><button class="btn btn-warning btn-sm " data-id="{{$key+1}}" data-toggle="modal"  data-target="#editexpence"><i class="fas fa-edit"></i></button>/<button class="btn btn-danger btn-sm " data-toggle="modal" data-id="{{$key+1}}" data-target="#deleteexpence"><i class="fas fa-trash-alt"></i></button>  </td>
+                  <td><button class="btn btn-warning btn-sm " data-id="{{$k}}" data-toggle="modal"  data-target="#editexpence"><i class="fas fa-edit"></i></button>/<button class="btn btn-danger btn-sm " data-toggle="modal" data-id="{{$k++}}" data-target="#deleteexpence"><i class="fas fa-trash-alt"></i></button>  </td>
                 </tr>
                 <?php $expenceTotal=$expenceTotal+$billexpence->amount; ?>
             @endforeach
              <tr>
-                  <td colspan="4" class="text-right">
+                  <td colspan="5" class="text-right">
                     Total Expence
                   </td>
                   <td>
@@ -91,11 +94,11 @@
                   </td>
                   <td>
                     <button class="btn btn-primary pull-right addexpences" data-toggle="modal" data-target="#addexpence"><i class="fas fa-plus"></i> Add Expences </button>
-                    <button class="btn btn-primary pull-right addexpences" data-toggle="modal" data-target="#createexpence"><i class="fas fa-plus"></i> Add Expences </button>
+                    <button class="btn btn-primary pull-right addexpences" data-toggle="modal" data-target="#createexpence"><i class="fas fa-plus"></i> Add new Expences </button>
                   </td>
                 </tr>
                 <tr>
-                  <td colspan="4" class="text-right">
+                  <td colspan="5" class="text-right">
                     Grand Total
                   </td>
                   <td>
@@ -287,7 +290,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="ModalLongTitle">Create New Expences</h5>
+        <h5 class="modal-title" id="ModalLongTitle">Edit Bill</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -316,14 +319,14 @@
                            return $(this).text();
                           }).get();
           var modal = $(this);
-          
-          var t=tableData[0].split(" ");
-          
-          $('#editproduct form').attr('action', '\\billproduct\\'+t[1]);
-          modal.find('.modal-body #product_name').val(t[0]);
-          modal.find('.modal-body #id').val(t[1]);
-          modal.find('.modal-body #quantity').val(tableData[1]);
-          modal.find('.modal-body #price').val(tableData[2]);
+          var id=$(row).attr("id");
+          $('#editproduct form').attr('action', '\\billproduct\\'+id);
+          modal.find('.modal-body #product_name').val(tableData[0]);
+          modal.find('.modal-body #id').val(id);
+          modal.find('.modal-body #description').val(tableData[1]);
+
+          modal.find('.modal-body #quantity').val(tableData[2]);
+          modal.find('.modal-body #price').val(tableData[3]);
         });
         {{--  Delete product Modal   --}}
         $('#deleteproduct').on('show.bs.modal', function (event) {
@@ -337,11 +340,9 @@
                            return $(this).text();
                           }).get();
           var modal = $(this);
-          
-          var t=tableData[0].split(" ");
-          
-          $('#deleteproduct form').attr('action', '\\billproduct\\'+t[1]);
-          modal.find('.modal-footer #id').val(t[1]);
+          var id=$(row).attr("id");
+          $('#deleteproduct form').attr('action', '\\billproduct\\'+id);
+          modal.find('.modal-footer #id').val(id);
           });
           {{--  Edit Expences modal  --}}
           $('#editexpence').on('show.bs.modal', function (event) {
@@ -350,17 +351,15 @@
           var r_id = button.data('id'); // Extract info from data-* attributes
           // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
           // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-          var row=$('#expencestable tr').eq(r_id+1);
+          var row=$('#productstable tr').eq(r_id+1);
           var tableData = $(row).children("td").map(function() {
                            return $(this).text();
                           }).get();
           var modal = $(this);
-          
-          var t=tableData[0].split(" ");
-          
-          $('#editexpence form').attr('action', '\\billexpence\\'+t[1]);
-          modal.find('.modal-body #expence_name').val(t[0]);
-          modal.find('.modal-body #id').val(t[1]);
+           var id=$(row).attr("id");
+          $('#editexpence form').attr('action', '\\billexpence\\'+id);
+          modal.find('.modal-body #expence_name').val(tableData[0]);
+          modal.find('.modal-body #id').val(id);
           modal.find('.modal-body #expenceamount').val(tableData[1]);
         });
         {{--  Delete Expence  --}}
@@ -370,16 +369,14 @@
           var r_id = button.data('id'); // Extract info from data-* attributes
           // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
           // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-          var row=$('#expencestable tr').eq(r_id+1);
+          var row=$('#productstable tr').eq(r_id+1);
           var tableData = $(row).children("td").map(function() {
                            return $(this).text();
                           }).get();
           var modal = $(this);
-          
-          var t=tableData[0].split(" ");
-          
-          $('#deleteexpence form').attr('action', '\\billexpence\\'+t[1]);
-          modal.find('.modal-footer #id').val(t[1]);
+           var id=$(row).attr("id");
+          $('#deleteexpence form').attr('action', '\\billexpence\\'+id);
+          modal.find('.modal-footer #id').val(id);
           });
           
           $('#editbill').on('show.bs.modal', function (event){ 
@@ -448,5 +445,33 @@
         minLength:0,
         autoFocus:true,
       });
+       $( "#dateofbill" ).datepicker({dateFormat: "dd-mm-y"});
+    var suppliers=[
+    @foreach ($bills['suppliers'] as $supplier)
+        {
+        id:{{$supplier->id}},
+        value:"{{$supplier->name}}"
+        },
+    @endforeach];
+    $('#supplier').autocomplete({
+        source:suppliers,
+        
+        {{-- function(request,response){
+            response($.map(suppliers,function(item){
+                return{
+                    id:item.id,
+                    value:item.value
+                }
+            }))
+        }, --}}
+        select:function(event,ui){
+            $(this).val(ui.item.value)
+            $('#supplier_id').val(ui.item.id);
+        },
+        minLength:0,
+        autoFocus:true,
+      });
+      $("#dateofbill").css({ 'z-index' : 2000 });    
+      //$("#myModal").css({ 'z-index' : 0 });
     </script>
 @endpush

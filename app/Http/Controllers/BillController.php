@@ -125,7 +125,11 @@ class BillController extends Controller
             $status=1;
         }
         $billUpdate=Bill::find($bill->id);
-        
+        $billUpdate->supplier_id=$request->input('supplier_id');
+        $billUpdate->bill_date=$request->input('bill_date');
+        $billUpdate->bill_status=$status;
+        $update=$billUpdate->save();
+         return redirect()->action('BillController@show', ['id' => $bill->id]);
     }
 
     /**

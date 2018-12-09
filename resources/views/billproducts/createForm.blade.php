@@ -16,6 +16,10 @@
                 <input type="hidden" name="bill_id" value="{{$bills['bill']->id}}">
             </div>
             <div class="form-group">
+                <label for="Description">Description</label>
+                <input type="text" class="form-control" name="description">
+            </div>
+            <div class="form-group">
                 <label for="quantity">Quantity</label>
                 <input type="text" class="form-control" name="quantity" required>
             </div>
