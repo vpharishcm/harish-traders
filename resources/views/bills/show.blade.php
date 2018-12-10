@@ -18,7 +18,7 @@
   </div>
   <div class="card-body">
     <h4>Supplier Name:<a href="\supplier\{{$bills['bill']->supplier_id}}"> {{$bills['bill']->supplier->name}}</a></h4><br>
-    <h4>Supplier Date:{{$bills['bill']->bill_date}}</h4><br>
+    <h4>Bill Date:{{$bills['bill']->d_date}}</h4><br>
       @if($bills['bill']->bill_status==0)
         <h4>Supplier Status:Without</h4><br>
       @else
@@ -381,16 +381,17 @@
           
           $('#editbill').on('show.bs.modal', function (event){ 
           var modal = $(this);
-          
-          
+           
           $('#editbill form').attr('action', '\\bill\\'+{{$bills['bill']->id}});
           modal.find('.modal-body #supplier').val("{{$bills['bill']->supplier->name}}");
+          modal.find(".modal-body #dateofbill" ).datepicker({dateFormat: "dd-mm-y"});
           modal.find('.modal-body #dateofbill').val("{{$bills['bill']->bill_date}}");
           if({{$bills['bill']->bill_status}}==0){
             modal.find('.modal-body #status #1').attr('selected', 'selected');
           }else{
             modal.find('.modal-body #status #2').attr('selected', 'selected');
           }
+          
         });
 
       var products=[
@@ -445,7 +446,7 @@
         minLength:0,
         autoFocus:true,
       });
-       $( "#dateofbill" ).datepicker({dateFormat: "dd-mm-y"});
+      
     var suppliers=[
     @foreach ($bills['suppliers'] as $supplier)
         {
@@ -471,7 +472,6 @@
         minLength:0,
         autoFocus:true,
       });
-      $("#dateofbill").css({ 'z-index' : 2000 });    
-      //$("#myModal").css({ 'z-index' : 0 });
+      $("#dateofbill").css({"z-index":"2147483647"} );
     </script>
 @endpush

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use \App\Supplier;
 use \App\Product;
 use \App\Expence;
+use \App\BillExpence;
+use \App\BillProduct;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -65,10 +67,10 @@ class BillController extends Controller
                 $status=1;
             }
             $bill_date=$request->input('bill_date');
-            $bill_date=Carbon::createFromFormat('d-m-y',$bill_date)->format('Y-m-d');
+            $bill_date=Carbon::createFromFormat('dd-mm-yy',$bill_date)->format('Y-m-d');
             $bill=Bill::create([
                 'supplier_id'=>$request->input('supplier_id'),
-                'bill_date'=>$request->input('bill_date'),
+                'bill_date'=>$bill_date,
                 'amount'=>0,
                 'bill_status'=>$status
                 ]);
@@ -93,6 +95,8 @@ class BillController extends Controller
         $suppliers=Supplier::all();
         $products=Product::all();
         $expences=Expence::all();
+        $d_date=Carbon::parse($bill->bill_date)->format("d-m-Y");
+        $bill['d_date']=$d_date;
         $bills=['bill'=>$bill,'suppliers'=>$suppliers,'products'=>$products,'expences'=>$expences];
         return view('bills.show',['bills'=>$bills]);
     }
@@ -124,9 +128,13 @@ class BillController extends Controller
         }else{
             $status=1;
         }
+        $bill_date=$request->input('bill_date');
+        $bill_date=Carbon::createFromFormat('d-m-y',$bill_date)->format('Y-m-d');
         $billUpdate=Bill::find($bill->id);
-        $billUpdate->supplier_id=$request->input('supplier_id');
-        $billUpdate->bill_date=$request->input('bill_date');
+        if($request->input('supplier_id')!=""){
+            $billUpdate->supplier_id=$request->input('supplier_id');
+        }
+        $billUpdate->bill_date=$bill_date;
         $billUpdate->bill_status=$status;
         $update=$billUpdate->save();
          return redirect()->action('BillController@show', ['id' => $bill->id]);
@@ -140,6 +148,11 @@ class BillController extends Controller
      */
     public function destroy(Bill $bill)
     {
-        //
+        $billProducts=BillProduct::where(["bill_id"=>$bill->id])->delete();
+        $billExpences=BillExpence::where(['bill_id'=>$bill->id])->delete();
+        $bills=Bill::find($bill->id);
+        $bills->delete();
+        return redirect(route('bill.index'));
+
     }
 }
