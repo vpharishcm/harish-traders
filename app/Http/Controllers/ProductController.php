@@ -86,6 +86,7 @@ class ProductController extends Controller
             $billProduct[$key]['supplier']=$bill->supplier;
             $dates[$key]=$bill->bill_date;
             $price[$key]=$temp->price;
+            $descriptions[$key]=$temp->description;
         }
         if($product->image!=""){
             $url =Storage::url($product->image);

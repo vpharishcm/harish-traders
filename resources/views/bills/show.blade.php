@@ -25,6 +25,7 @@
         <h4>Supplier Status:Billed</h4><br>
       @endif
       {{--table for products--}}
+      <div class="table-responsive">
       <table class="table table-striped table-dark" id="productstable">
           <thead>
             <tr >
@@ -48,7 +49,8 @@
             </tr>
           </thead>
           <tbody>
-            <?php $productTotal=0; ?>
+            <?php $productTotal=0;
+                  $pk=0; ?>
             @foreach($bills['bill']->products as $key=>$billProduct)
               
                 <tr id="{{$billProduct->id}}">
@@ -60,7 +62,8 @@
                   <td>{{$billProduct->quantity*$billProduct->price}} </td>
                   <td><button class="btn btn-warning btn-sm " data-id="{{$key+1}}" data-toggle="modal"  data-target="#editproduct"><i class="fas fa-edit"></i></button>/<button class="btn btn-danger btn-sm " data-toggle="modal" data-id="{{$key+1}}" data-target="#deleteproduct"><i class="fas fa-trash-alt"></i></button> </td>
                 </tr>
-                <?php $productTotal=$productTotal+($billProduct->quantity*$billProduct->price);?>
+                <?php $productTotal=$productTotal+($billProduct->quantity*$billProduct->price);
+                      $pk=$key; ?>
             @endforeach
           </tbody>
           <tfoot>
@@ -76,7 +79,7 @@
                   </td>
                 </tr>
                 <?php $expenceTotal=0; ?>
-                <?php $k=$key+3; ?>
+                <?php $k=$pk+3; ?>
             @foreach ($bills['bill']->expences as $key=>$billexpence)
               <tr id="{{$billexpence->id}}">
                   <td colspan="5" class="text-right">{{$billexpence->expence->name}}</td>
@@ -108,9 +111,7 @@
 
           </tfoot>
         </table>
-               
-          </tfoot>
-        </table>
+      </div>
   </div>
 </div>
 {{--  bill modals  --}}
