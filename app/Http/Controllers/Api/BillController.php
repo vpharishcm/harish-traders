@@ -94,9 +94,23 @@ class BillController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Bill $bill)
     {
         //
+        $supplier=Supplier::all()->where('id','=',$bill->supplier_id);
+        $billexpences=BillExpence::all()->where('bill_id','=',$bill->id);
+        $billproducts=BillProduct::all()->where('bill_id','=',$bill->id);
+        foreach($billproducts as $key1=>$billproduct){
+            $billproduct['product_name']=Product::where('id','=',$billproduct->product_id)->value('name');
+        }
+        $bill['bill_products']=$billproducts;
+        $billexpences=BillExpence::all()->where('bill_id','=',$bill->id);
+        foreach($billexpences as $key2=>$billexpence){
+            $billexpence['expence_name']=Expence::where('id','=',$billexpence->expence_id)->value('name');
+        }
+        $bill['bill_expence']=$billexpences;
+        $bill['supplier']=$supplier;
+        return array('bill'=>$bill);
     }
 
     /**
@@ -117,9 +131,32 @@ class BillController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Bill $bill)
     {
         //
+        $status=0;
+        if($request->input('status')=="without"){
+            $status=0;
+        }else{
+            $status=1;
+        }
+        $bill_date=$request->input('bill_date');
+        $bill_date=Carbon::createFromFormat('d-m-y',$bill_date)->format('Y-m-d');
+        $billUpdate=Bill::find($bill->id);
+        if($request->input('supplier_id')!=""){
+            $billUpdate->supplier_id=$request->input('supplier_id');
+        }
+        $billUpdate->bill_date=$bill_date;
+        $billUpdate->bill_status=$status;
+        $update=$billUpdate->save();
+        if($update){
+            return array(
+                 'status' => 'success'
+            );
+        }
+        else{
+            return array('status' => 'Not Succesfull' );
+        }
     }
 
     /**
@@ -128,8 +165,13 @@ class BillController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Bill $bill)
     {
         //
+        $billProducts=BillProduct::where(["bill_id"=>$bill->id])->delete();
+        $billExpences=BillExpence::where(['bill_id'=>$bill->id])->delete();
+        $bills=Bill::find($bill->id);
+        $bills->delete();
+         return array('status' => 'Succesfull' );
     }
 }

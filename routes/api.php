@@ -22,3 +22,5 @@ Route::resource('product', 'Api\ProductController')->middleware('auth:api');
 Route::resource('supplier', 'Api\SupplierController')->middleware('auth:api');
 Route::resource('expence', 'Api\ExpenceController')->middleware('auth:api');
 Route::resource('bill', 'Api\BillController')->middleware('auth:api');
+Route::resource('billexpence', 'Api\BillExpenceController')->middleware('auth:api');
+Route::resource('billproduct', 'Api\BillProductController')->middleware('auth:api');
