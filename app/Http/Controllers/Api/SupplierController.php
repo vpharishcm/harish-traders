@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Supplier;
+use App\Bill;
 
 class SupplierController extends Controller
 {
@@ -65,6 +66,8 @@ class SupplierController extends Controller
     public function show( Supplier $supplier)
     {
         //
+        $bills=Bill::all()->where('supplier_id','=',$supplier->id);
+        $supplier['bills']=$bills;
         return array('Supplier'=>$supplier);
     }
 

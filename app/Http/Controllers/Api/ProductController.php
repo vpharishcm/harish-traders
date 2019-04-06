@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Product;
 use App\Bill;
+use App\BillProduct;
 
 class ProductController extends Controller
 {
@@ -64,13 +65,14 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $billProduct=$product->billProduct;
+        $billProduct=BillProduct::all()->where('product_id','=',$product->id);
         foreach ($billProduct as $key => $temp) {
             $bill=Bill::where('id',$temp->bill_id)->get()->first();
             $billProduct[$key]['bill_date']=$bill->bill_date;
             $billProduct[$key]['supplier']=$bill->supplier;
             $descriptions[$key]=$temp->description;
         }
+        $product['bill_products']=$billProduct;
         if($product->image!=""){
             $url =Storage::url($product->image);
             $product['url']=$url;
